@@ -1,33 +1,23 @@
 ﻿using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp_Device
+namespace DeviceApp_console.Services
 {
-    class Program
+     public class DeviceService  // copy f. från programm
     {
-
-        // 1. skapa inctance med connection string name i Device Explorer "DeviceApp"
 
         private static DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(
             "HostName=ecwin20IoTHub.azure-devices.net;DeviceId=DeviceApp;SharedAccessKey=3ezWY7wyls+AtDvS0QH1HIYMVMaEKxfV/dgtnWIY39w=", TransportType.Mqtt);
         private static int telemetryInterval = 5;// 5 secund
         private static Random rnd = new Random();//  i async
 
-        static void Main(string[] args)
-        {
-            deviceClient.SetMethodHandlerAsync("SetTelemetryInterval", SetTelemetryInterval, null).Wait();
-                SendMessageAsync().GetAwaiter();
-
-                Console.ReadKey();
-        }
-
-        // bygga 2st f.--static (hela programm)
         // 1 f.testar  set interval del
         //retunera <MethodResponse> //gör det med TASK
-        private static Task<MethodResponse>SetTelemetryInterval(MethodRequest request, object userContext)
+        private static Task<MethodResponse> SetTelemetryInterval(MethodRequest request, object userContext)
         //MethodRequest - request som styra med
         {
             var payload = Encoding.UTF8.GetString(request.Data).Replace("\"", "");
@@ -48,6 +38,7 @@ namespace ConsoleApp_Device
                 return Task.FromResult(new MethodResponse(Encoding.UTF8.GetBytes(json), 501));
             }
         }
+
 
 
         // 2.f. tar testning 1 och skicka mdl
@@ -76,5 +67,6 @@ namespace ConsoleApp_Device
 
 
         }
+
     }
 }
